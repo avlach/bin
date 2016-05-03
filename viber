@@ -1,0 +1,4 @@
+#!/bin/bash
+
+dbus-launch /opt/viber/Viber
+
