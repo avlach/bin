@@ -1,5 +1,5 @@
 #!/bin/bash
 
-dbus-launch /opt/viber/Viber &
+dbus-launch /opt/viber/Viber &> /dev/null &
 
 

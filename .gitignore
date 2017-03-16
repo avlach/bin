@@ -20,6 +20,8 @@ lib64/
 parts/
 sdist/
 var/
+odl-eclipse/ 
+
 *.egg-info/
 .installed.cfg
 *.egg

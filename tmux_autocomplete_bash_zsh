@@ -1,0 +1,55 @@
+# Tab completion for tmux sessions.
+# Quickly open new tmux sessions in your projects dir.
+
+#### zsh function 
+
+function tm() {
+    [[ -z "$1" ]] && { echo "usage: tm <session>" >&2; return 1; }
+    tmux has -t $1 && tmux attach -t $1 || tmux new -s $1
+}
+
+function __tmux-sessions() {
+    local expl
+    local -a sessions
+    sessions=( ${${(f)"$(command tmux list-sessions)"}/:[ $'\t']##/:} )
+    _describe -t sessions 'sessions' sessions "$@"
+}
+compdef __tmux-sessions tm
+
+
+#### bash function 
+
+# Usage:
+
+# Use the tab to open an existing session.
+# $ tm [TAB]
+
+# Arguments that are passed to tm will be used to create a new session.
+# tm will open a new tmux session and set the default path to the found dir. 
+# $ tm payments
+# $ pwd
+# /code_dir/payments 
+
+tm()
+{
+  local session_name="$1"
+  tmux attach-session -t "$session_name"
+  if [ $? -ne 0 ]; then
+    local code_dir="/home/ryandotsmith/src"
+    local list_of_dirs=( $(find "$code_dir" -name "$session_name" -type d ) )
+    local first_found="${dirs[0]}"
+    cd "$first_found"
+    echo "tm() is creating new tmux session with name=$session_name"
+    tmux new-session -d -s "$session_name"
+    echo "tm() is setting default path with dir=$first_found"
+    tmux set default-path "$first_found"
+    tmux attach-session -t "$session_name"
+  fi
+}
+_tm()
+{
+  COMPREPLY=()
+  local session="${COMP_WORDS[COMP_CWORD]}"
+  COMPREPLY=( $(compgen -W "$(tmux list-sessions 2>/dev/null | awk -F: '{ print $1 }')" -- "$session") )
+}
+complete -F _tm tm
