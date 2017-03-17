@@ -1,0 +1,16 @@
+#!/bin/bash
+
+case "$(pidof Viber | wc -w)" in 
+
+0)  echo "Restarting Viber: $(date)" >> /var/log/viber.log
+    /home/wasp/bin/viber &
+    ;;
+
+1)  # all good don't do anything 
+    ;;
+
+*)  echo "More than one process was running: $(date)" >> /var/log/viber.log
+    kill $(pidof Viber | awk '{print $1}')
+    ;;
+esac
+
