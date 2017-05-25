@@ -1,11 +1,10 @@
 #!/bin/bash
 
 sudo apt-fast update &> /dev/null
-sudo apt-fast upgrade 1> /dev/null
-sudo apt-get dist-upgrade -y
+sudo apt-fast dist-upgrade -y
 sudo apt-get autoremove 1> /dev/null
 sudo apt-get autoclean 	1> /dev/null
+sudo apt-get clean  1> /dev/null
 
 echo "============================================"
 echo "System upgrade performed at $(date)"
-
